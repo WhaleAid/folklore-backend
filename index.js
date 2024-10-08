@@ -48,7 +48,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
             const session = event.data.object;
 
             const paymentId = session.metadata.paymentId;
-            const payment = await payment.findByIdAndUpdate(paymentId, { status: 'Paid' });
+            const payment = await payment.findByIdAndUpdate(paymentId, { status: 'Paid', order: 'pending' });
 
             console.log(`Payment ${paymentId} has been completed and updated.`);
             break;

@@ -13,10 +13,10 @@ const paymentSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    paymentStatus: {
+    status: {
         type: String,
     },
-    orderStatus: {
+    order: {
         type: String,
     },
 },
