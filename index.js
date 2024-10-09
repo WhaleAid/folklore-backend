@@ -61,7 +61,9 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "*",
+}));
 app.set('trust proxy', true);
 
 app.get('/', (req, res) => {
