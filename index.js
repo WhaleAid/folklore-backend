@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const paymentRoutes = require('./routes/payment.routes');
-const { payment } = require('./models');
+const { Payment } = require('./models');
 const http = require('http');
 const mongoose = require('mongoose');
 
@@ -18,15 +18,6 @@ mongoose.connect(mongoDB)
     .catch(error => console.log('MongoDB Client Error', error));
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(cors());
-app.set('trust proxy', true);
-
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to folklore API' });
-});
-
-paymentRoutes(app);
 
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     console.log('Webhook received!');
@@ -48,7 +39,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
             const session = event.data.object;
 
             const paymentId = session.metadata.paymentId;
-            const payment = await payment.findByIdAndUpdate(paymentId, { status: 'Paid', order: 'pending' });
+            const payment = await Payment.findByIdAndUpdate(paymentId, { status: 'Paid', order: 'pending' });
 
             console.log(`Payment ${paymentId} has been completed and updated.`);
             break;
@@ -57,7 +48,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
             const paymentIntent = event.data.object;
 
             const paymentIntentId = paymentIntent.metadata.paymentId;
-            await payment.findByIdAndUpdate(paymentIntentId, { status: 'Paid' });
+            await Payment.findByIdAndUpdate(paymentIntentId, { status: 'Paid' });
 
             console.log(`Payment Intent ${paymentIntentId} was successful!`);
             break;
@@ -68,6 +59,18 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
 
     res.status(200).end();
 });
+
+app.use(express.json());
+app.use(cors());
+app.set('trust proxy', true);
+
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to folklore API' });
+});
+
+paymentRoutes(app);
+
+
 
 const server = http.createServer(app);
 
