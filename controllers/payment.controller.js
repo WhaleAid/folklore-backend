@@ -66,3 +66,26 @@ exports.getPayment = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+exports.getAllPayments = async (req, res) => {
+    try {
+        const payments = await Payment.find();
+        res.json(payments);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.checkPassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        if (hashedPassword === process.env.PASSWORD) {
+            res.status(200).json({ message: 'Password is correct' });
+        } else {
+            res.status(401).json({ message: 'Password is incorrect' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
