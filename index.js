@@ -13,7 +13,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const mongoDB = process.env.MONGODB_URI;
 
-mongoose.connect(mongoDB)
+mongoose.connect(mongoDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    connectTimeoutMS: 30000,
+})
     .then(() => console.log('MongoDB Client Connected'))
     .catch(error => console.log('MongoDB Client Error', error));
 
