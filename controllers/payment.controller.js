@@ -1,5 +1,6 @@
 const { Payment } = require('../models');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 
 exports.createPayment = async (req, res) => {
     try {
@@ -69,8 +70,8 @@ exports.getPayment = async (req, res) => {
 
 exports.getAllPayments = async (req, res) => {
     try {
-        const payments = await Payment.find();
-        res.json(payments);
+        const payments = await Payment.find().sort({ createdAt: -1 });
+        res.status(200).json(payments);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -79,12 +80,27 @@ exports.getAllPayments = async (req, res) => {
 exports.checkPassword = async (req, res) => {
     try {
         const { password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        if (hashedPassword === process.env.PASSWORD) {
+        if (password === process.env.PASSWORD) {
             res.status(200).json({ message: 'Password is correct' });
         } else {
             res.status(401).json({ message: 'Password is incorrect' });
         }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.orderStatus = async (req, res) => {
+    try {
+        const { paymentId, orderStatus } = req.body;
+
+        if (!paymentId || !orderStatus) {
+            return res.status(400).json({ message: 'Please provide paymentId and orderStatus' });
+        }
+
+        const payment = await Payment.findByIdAndUpdate(paymentId, { order: orderStatus });
+
+        res.json(payment);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

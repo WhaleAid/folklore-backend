@@ -5,4 +5,5 @@ module.exports = (app) => {
     app.get("/payment/:id", paymentController.getPayment);
     app.get("/payment", paymentController.getAllPayments);
     app.post("/check-password", paymentController.checkPassword);
+    app.post("/update-order", paymentController.orderStatus);
 }
