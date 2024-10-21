@@ -14,7 +14,6 @@ const PORT = process.env.PORT || 3000;
 const mongoDB = process.env.MONGODB_URI;
 
 mongoose.connect(mongoDB, {
-    useNewUrlParser: true,
     useUnifiedTopology: true,
     connectTimeoutMS: 30000,
 })
