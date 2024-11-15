@@ -15,13 +15,13 @@ exports.createPayment = async (req, res) => {
         const payment = await Payment.create({
             email: email,
             message: message,
-            amount: amount,
+            amount: amount / 100,
         });
 
         const stripe = require('stripe')(process.env.STRIPE_API_KEY);
 
         const price = await stripe.prices.create({
-            unit_amount: amount * 100,
+            unit_amount: amount,
             currency: 'eur',
             product_data: {
                 name: message,
